@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: customer-auth-service
+spec:
+  selector:
+    app: customer-auth-service
+  ports:
+    - protocol: TCP
+      port: 5004 # The internal port for the service
+      targetPort: 5004 # The port the container is listening on

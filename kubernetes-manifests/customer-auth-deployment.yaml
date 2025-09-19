@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: payment-service-deployment
+  name: customer-auth-service-deployment
   labels:
-    app: payment-service
+    app: customer-auth-service
 spec:
   replicas: 1 
   selector:
     matchLabels:
-      app: payment-service
+      app: customer-auth-service
   template:
     metadata:
       labels:
-        app: payment-service
+        app: customer-auth-service
     spec:
       containers:
-      - name: payment-service-container
-        image: starrider315/payment-service:v1.1
+      - name: customer-auth-service-container
+        image: starrider315/customer-auth-service:v1.1
         ports:
-        - containerPort: 5005
+        - containerPort: 5004
         resources:
           requests:
             cpu: "100m"
