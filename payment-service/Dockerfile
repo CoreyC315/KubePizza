@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 5005
 
 # Run the app
-CMD ["python", "app.py"]
+CMD ["python", "payment-app.py"]

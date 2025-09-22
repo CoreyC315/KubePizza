@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 5003
 
 # Run the app
-CMD ["python", "app.py"]
+CMD ["python", "delivery-app.py"]

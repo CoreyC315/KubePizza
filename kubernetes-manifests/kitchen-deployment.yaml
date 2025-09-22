@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: kitchen-service-container
-        image: starrider315/kitchen-service:v1.1
+        image: starrider315/kitchen-service:v1.2
         ports:
         - containerPort: 5002
         resources:

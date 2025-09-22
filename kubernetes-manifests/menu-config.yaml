@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: menu-config
+data:
+  menu.json: |
+    {
+      "pizzas": [
+        { "id": 1, "name": "Margherita", "toppings": ["tomato", "mozzarella", "basil"] },
+        { "id": 2, "name": "Pepperoni", "toppings": ["tomato", "mozzarella", "pepperoni"] },
+        { "id": 3, "name": "Hawaiian", "toppings": ["tomato", "mozzarella", "ham", "pineapple"] }
+      ],
+      "specials": [
+        { "name": "The KubePizza Special", "description": "A new daily special" }
+      ]
+    }

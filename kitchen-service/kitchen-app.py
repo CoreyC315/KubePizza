@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import time
+import requests
 
 app = Flask(__name__)
 
@@ -29,9 +30,16 @@ def cook_order(order_id):
     
     print(f"Order {order_id} is ready for delivery!")
     
-    # In a real-world app, you'd make another API call to the Delivery Service
-    # to hand off the order.
-    
+    # Make an API call to the Delivery Service
+    try:
+        delivery_response = requests.post(f'http://delivery-service:5003/deliver/{order_id}')
+        if delivery_response.status_code == 200:
+            print(f"Order {order_id} handed off to Delivery Service successfully.")
+        else:
+            print(f"Error handing off order {order_id} to Delivery Service.")
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to connect to delivery-service: {e}")
+        
     return jsonify({"message": f"Order {order_id} is ready for delivery!"}), 200
 
 @app.route('/health', methods=['GET'])

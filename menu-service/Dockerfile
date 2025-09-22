@@ -19,4 +19,4 @@ COPY . .
 EXPOSE 5006
 
 # Run app.py when the container launches
-CMD [ "python", "app.py" ]
+CMD [ "python", "menu-app.py" ]

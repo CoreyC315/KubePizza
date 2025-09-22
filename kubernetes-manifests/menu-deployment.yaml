@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: menu-service-container
-        image: starrider315/menu-service:v1.1
+        image: starrider315/menu-service:v1.2
         ports:
         - containerPort: 5006
         resources:
@@ -26,3 +26,10 @@ spec:
           limits:
             cpu: "200m"
             memory: "256Mi"
+        volumeMounts:
+        - name: menu-volume
+          mountPath: /app/config
+      volumes:
+      - name: menu-volume
+        configMap:
+          name: menu-config

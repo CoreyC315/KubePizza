@@ -16,9 +16,15 @@ spec:
     spec:
       containers:
       - name: payment-service-container
-        image: starrider315/payment-service:v1.1
+        image: starrider315/payment-service:v1.2
         ports:
         - containerPort: 5005
+        env:
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: payment-api-key
+              key: api_key
         resources:
           requests:
             cpu: "100m"

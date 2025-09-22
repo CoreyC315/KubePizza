@@ -16,9 +16,20 @@ spec:
     spec:
       containers:
       - name: customer-auth-service-container
-        image: starrider315/customer-auth-service:v1.1
+        image: starrider315/customer-auth-service:v1.2
         ports:
         - containerPort: 5004
+        env: 
+        - name: USER_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: customer-auth-creds
+              key: username
+        - name: USER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: customer-auth-creds
+              key: password
         resources:
           requests:
             cpu: "100m"

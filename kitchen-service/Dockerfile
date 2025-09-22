@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 5002
 
 # Run the app
-CMD ["python", "app.py"]
+CMD ["python", "kitchen-app.py"]

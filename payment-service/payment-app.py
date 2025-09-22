@@ -1,22 +1,20 @@
 from flask import Flask, request, jsonify
+import os
 
 app = Flask(__name__)
 
 # This is a dummy API key, which will be stored in a Kubernetes Secret later.
-API_KEY = "dummy-api-key-12345"
+API_KEY = os.getenv("API_KEY")
 
-# Test JSON command: Invoke-RestMethod -Uri http://localhost:5005/pay 
-# -Method Post -ContentType "application/json" 
-# -Headers @{"X-API-Key"="dummy-api-key-12345"} -Body '{"amount": 25.50}'
 @app.route('/pay', methods=['POST'])
 def process_payment():
     """Endpoint to simulate processing a payment."""
     payment_data = request.json
     amount = payment_data.get('amount')
-    api_key = request.headers.get('X-API-Key')
-    
-    # Simple validation using the dummy API key.
-    if api_key != API_KEY:
+    api_key_header = request.headers.get('X-API-Key')
+
+    # Validate against the API key from the environment
+    if api_key_header != API_KEY:
         return jsonify({"message": "Unauthorized: Invalid API Key"}), 401
 
     if amount and amount > 0:
@@ -28,9 +26,7 @@ def process_payment():
 
 @app.route('/health', methods=['GET'])
 def health_check():
-    """A simple health check endpoint."""
     return "OK", 200
 
 if __name__ == '__main__':
-    # Run the Flask app on all available network interfaces.
     app.run(host='0.0.0.0', port=5005)

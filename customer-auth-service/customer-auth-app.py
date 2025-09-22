@@ -1,12 +1,16 @@
 from flask import Flask, request, jsonify
+import os
 
 app = Flask(__name__)
+
+DUMMY_USER_EMAIL = os.getenv("USER_EMAIL")
+DUMMY_USER_PASSWORD = os.getenv("USER_PASSWORD")
 
 # A simple dictionary to store user accounts in memory
 # In a real app, this would be a database
 users = {
-    "john.doe@email.com": {
-        "password": "password123", # Hashed password in a real app
+    DUMMY_USER_EMAIL: {
+        "password": DUMMY_USER_PASSWORD,
         "order_history": ["order_1", "order_2"]
     }
 }
@@ -33,7 +37,6 @@ def register_user():
 
 @app.route('/login', methods=['POST'])
 def login_user():
-    """Endpoint to log in a user and return a token."""
     login_data = request.json
     email = login_data.get('email')
     password = login_data.get('password')
@@ -41,11 +44,10 @@ def login_user():
     user = users.get(email)
     if not user or user.get("password") != password:
         return jsonify({"error": "Invalid email or password"}), 401
-    
-    # In a real app, this would be a JWT or similar
+
     auth_token = f"auth_token_for_{email}"
     tokens[auth_token] = email
-    
+
     return jsonify({"message": "Login successful", "token": auth_token}), 200
 
 @app.route('/orders', methods=['GET'])

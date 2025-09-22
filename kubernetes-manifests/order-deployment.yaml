@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: order-service-container
-        image: starrider315/order-service:v1.0
+        image: starrider315/order-service:v1.1
         ports:
         - containerPort: 5001
         resources:
