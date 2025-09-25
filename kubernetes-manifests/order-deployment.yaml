@@ -5,7 +5,7 @@ metadata:
   labels:
     app: order-service
 spec:
-  replicas: 1 
+  replicas: 1
   selector:
     matchLabels:
       app: order-service
@@ -16,9 +16,20 @@ spec:
     spec:
       containers:
       - name: order-service-container
-        image: starrider315/order-service:v1.1
+        image: starrider315/order-service:v1.3
         ports:
         - containerPort: 5001
+        env: 
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: payment-api-key
+              key: api_key
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: password
         resources:
           requests:
             cpu: "100m"

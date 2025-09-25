@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>KubePizza 🍕</title>
+  <style>
+    body { background-color: #f0f0f0; text-align: center; font-family: sans-serif; }
+    h1 { color: #d9534f; }
+    img { width: 300px; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .menu-item { border-bottom: 1px solid #eee; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
+    #order-form { margin-top: 20px; }
+    #order-form input, #order-form button { padding: 10px; margin: 5px; }
+    #order-form button { background-color: #5cb85c; color: white; border: none; cursor: pointer; }
+    #order-status { margin-top: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome to KubePizza!</h1>
+    <p>The finest, most reliable pizza in the cloud!</p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Eq_it-na_pizza-margherita_sep2005_sml.jpg" alt="A delicious pizza">
+
+    <hr>
+
+    <h2>Our Menu</h2>
+    <div id="menu-container">
+      </div>
+    
+    <hr>
+    
+    <h2>Place an Order</h2>
+    <div id="order-form">
+      <input type="text" id="customerName" placeholder="Your Name" required>
+      <select id="pizzaSelect"></select>
+      <button onclick="placeOrder()">Order Now</button>
+    </div>
+
+    <div id="order-status"></div>
+
+  </div>
+
+  <script>
+    // Define the base URLs for your services. After setting up Ingress,
+    // these will likely point to the single Ingress entry point.
+    const MENU_SERVICE_URL = '/menu';
+    const ORDER_SERVICE_URL = '/order';
+
+    // Function to fetch the menu from the menu-service
+    async function fetchMenu() {
+      const menuContainer = document.getElementById('menu-container');
+      const pizzaSelect = document.getElementById('pizzaSelect');
+      
+      try {
+        const response = await fetch(MENU_SERVICE_URL);
+        if (!response.ok) {
+          throw new Error('Failed to fetch menu.');
+        }
+        const menu = await response.json();
+
+        // Clear existing content
+        menuContainer.innerHTML = '';
+        pizzaSelect.innerHTML = '<option value="">--Select a Pizza--</option>';
+
+        // Populate the menu display and the dropdown
+        menu.forEach(pizza => {
+          // Display logic
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'menu-item';
+          itemDiv.innerHTML = `<span>${pizza.name}</span><span>$${pizza.price ? pizza.price.toFixed(2) : 'N/A'}</span>`;
+          menuContainer.appendChild(itemDiv);
+
+          // Dropdown logic
+          const option = document.createElement('option');
+          option.value = pizza.id;
+          option.textContent = `${pizza.name} - $${pizza.price ? pizza.price.toFixed(2) : 'N/A'}`;
+          pizzaSelect.appendChild(option);
+        });
+
+      } catch (error) {
+        menuContainer.innerHTML = '<p style="color:red;">Error: Could not load the menu. Please try again later.</p>';
+        console.error('Error fetching menu:', error);
+      }
+    }
+
+    // Function to place a new order using the order-service
+    async function placeOrder() {
+      const customerName = document.getElementById('customerName').value;
+      const pizzaId = document.getElementById('pizzaSelect').value;
+      const orderStatus = document.getElementById('order-status');
+
+      if (!customerName || !pizzaId) {
+        orderStatus.textContent = 'Please select a pizza and enter your name.';
+        orderStatus.style.color = 'red';
+        return;
+      }
+      
+      const orderData = {
+        customer_name: customerName,
+        items: [{ id: parseInt(pizzaId) }]
+      };
+
+      try {
+        const response = await fetch(ORDER_SERVICE_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(orderData),
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+          orderStatus.textContent = `Order placed successfully! Your Order ID is: ${result.order_id}`;
+          orderStatus.style.color = 'green';
+        } else {
+          orderStatus.textContent = `Error placing order: ${result.error || response.statusText}`;
+          orderStatus.style.color = 'red';
+        }
+      } catch (error) {
+        orderStatus.textContent = 'Failed to connect to the order service.';
+        orderStatus.style.color = 'red';
+        console.error('Error placing order:', error);
+      }
+    }
+
+    // Load the menu when the page loads
+    document.addEventListener('DOMContentLoaded', fetchMenu);
+  </script>
+
+</body>
+</html>

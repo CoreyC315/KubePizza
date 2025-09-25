@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubepizza-frontend-deployment
+  labels:
+    app: kubepizza-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubepizza-frontend
+  template:
+    metadata:
+      labels:
+        app: kubepizza-frontend
+    spec:
+      containers:
+      - name: frontend-container
+        image: starrider315/kubepizza-frontend:v1.0
+        ports:
+        - containerPort: 80 # Nginx runs on port 80 by default
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
